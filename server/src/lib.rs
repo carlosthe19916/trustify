@@ -9,6 +9,7 @@ use std::sync::Arc;
 use trustify_api::graph::{DbStrategy, Graph, InnerGraph};
 use trustify_common::config::Database;
 
+pub mod dto;
 pub mod server;
 
 /// Run the API server
@@ -67,7 +68,8 @@ pub struct AppState {
 pub fn configure(config: &mut web::ServiceConfig) {
     config
         .service(read::package::dependencies)
-        .service(read::package::variants);
+        .service(read::package::variants)
+        .service(read::advisory::list_advisories);
 }
 
 #[cfg(test)]

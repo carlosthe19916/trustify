@@ -1,6 +1,6 @@
 //! Support for advisories.
 
-use crate::db::Transactional;
+use crate::db::{Paginated, PaginatedResults, Transactional};
 use crate::graph::advisory::advisory_vulnerability::AdvisoryVulnerabilityContext;
 use crate::graph::error::Error;
 use crate::graph::InnerGraph;
@@ -9,7 +9,7 @@ use fixed_package_version::FixedPackageVersionContext;
 use migration::m0000032_create_advisory_vulnerability::AdvisoryVulnerability;
 use not_affected_package_version::NotAffectedPackageVersionContext;
 use sea_orm::ActiveValue::Set;
-use sea_orm::{ActiveModelTrait, EntityTrait, FromQueryResult, QueryFilter};
+use sea_orm::{ActiveModelTrait, EntityTrait, FromQueryResult, PaginatorTrait, QueryFilter};
 use sea_orm::{ColumnTrait, QuerySelect, RelationTrait};
 use sea_query::{Condition, JoinType};
 use std::collections::HashMap;
@@ -28,6 +28,47 @@ pub mod not_affected_package_version;
 pub mod csaf;
 
 impl InnerGraph {
+    pub async fn list_advisories(
+        &self,
+        paginated: Paginated,
+        tx: Transactional<'_>,
+    ) -> Result<PaginatedResults<AdvisoryContext>, Error> {
+        let connection = self.connection(tx);
+        let pagination =
+            entity::advisory::Entity::find().paginate(&connection, paginated.page_size);
+
+        let num_items = pagination.num_items().await?;
+        let num_pages = pagination.num_pages().await?;
+
+        Ok(PaginatedResults {
+            results: pagination
+                .fetch_page(paginated.page)
+                .await?
+                .drain(0..)
+                .map(|advisory| (self, advisory).into())
+                .collect::<Vec<AdvisoryContext>>(),
+            page: paginated.page_size,
+            num_items,
+            num_pages,
+            prev_page: if paginated.page > 0 {
+                Some(Paginated {
+                    page_size: paginated.page_size,
+                    page: paginated.page - 1,
+                })
+            } else {
+                None
+            },
+            next_page: if paginated.page + 1 < num_pages {
+                Some(Paginated {
+                    page_size: paginated.page_size,
+                    page: paginated.page + 1,
+                })
+            } else {
+                None
+            },
+        })
+    }
+
     pub(crate) async fn get_advisory_by_id(
         &self,
         id: i32,
@@ -83,7 +124,7 @@ impl InnerGraph {
 #[derive(Clone)]
 pub struct AdvisoryContext {
     system: InnerGraph,
-    advisory: entity::advisory::Model,
+    pub advisory: entity::advisory::Model,
 }
 
 impl PartialEq for AdvisoryContext {
