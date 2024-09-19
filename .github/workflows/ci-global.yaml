@@ -14,31 +14,36 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-and-upload-for-global-ci:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-#      - name: save trustd image
-#        run: |
-#          docker build . -t ghcr.io/trustification/trustd:pr-test -f Dockerfile.server
-#          docker save -o /tmp/trustd.tar ghcr.io/trustification/trustd:pr-test
+  build-binary:
+    uses: ./.github/workflows/build-binary.yaml
+    with:
+      version: pr-test
 
-      - uses: ./.github/actions/build-container
-        with:
-          image_name: ghcr.io/trustification/trustd
-          image_tag: pr-test
-
-#      - name: Upload trustd image as artifact
-#        uses: actions/upload-artifact@v3
+#  build-and-upload-for-global-ci:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+##      - name: save trustd image
+##        run: |
+##          docker build . -t ghcr.io/trustification/trustd:pr-test -f Dockerfile.server
+##          docker save -o /tmp/trustd.tar ghcr.io/trustification/trustd:pr-test
+#
+#      - uses: ./.github/actions/build-container
 #        with:
-#          name: trustd
-#          path: /tmp/trustd.tar
-#          retention-days: 1
-
-#  run-global-ci:
-#    needs: build-and-upload-for-global-ci
-#    uses: trustification/trustify-ci/.github/workflows/global-ci.yml@main
-#    with:
-#      artifact: trustd
-#      server_image: ghcr.io/trustification/trustd:pr-test
-#      run_ui_tests: false
+#          image_name: ghcr.io/trustification/trustd
+#          image_tag: pr-test
+#
+##      - name: Upload trustd image as artifact
+##        uses: actions/upload-artifact@v3
+##        with:
+##          name: trustd
+##          path: /tmp/trustd.tar
+##          retention-days: 1
+#
+##  run-global-ci:
+##    needs: build-and-upload-for-global-ci
+##    uses: trustification/trustify-ci/.github/workflows/global-ci.yml@main
+##    with:
+##      artifact: trustd
+##      server_image: ghcr.io/trustification/trustd:pr-test
+##      run_ui_tests: false
