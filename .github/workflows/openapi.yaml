@@ -4,13 +4,13 @@ on:
   push:
     branches:
       - main
+      - release/**
     paths:
       - openapi.yaml
 
 jobs:
   trustify-ui:
     runs-on: ubuntu-latest
-    if: ${{ github.repository_owner == 'trustification' }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -18,8 +18,9 @@ jobs:
       - name: Checkout trustify-ui
         uses: actions/checkout@v4
         with:
-          repository: trustification/trustify-ui
+          repository: carlosthe19916/trustify-ui
           path: trustify-ui
+          ref: ${{ github.ref_name }}
       - name: Update trustify-ui
         run: |
           rm ./trustify-ui/client/openapi/trustd.yaml
