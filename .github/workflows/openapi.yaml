@@ -4,13 +4,13 @@ on:
   push:
     branches:
       - main
+      - release/**
     paths:
       - openapi.yaml
 
 jobs:
   trustify-ui:
     runs-on: ubuntu-latest
-    if: ${{ github.repository_owner == 'trustification' }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -18,8 +18,9 @@ jobs:
       - name: Checkout trustify-ui
         uses: actions/checkout@v4
         with:
-          repository: trustification/trustify-ui
+          repository: carlosthe19916/trustify-ui
           path: trustify-ui
+          ref: ${{ github.ref_name }}
       - name: Update trustify-ui
         run: |
           rm ./trustify-ui/client/openapi/trustd.yaml
@@ -27,16 +28,10 @@ jobs:
           cd ./trustify-ui
           git diff
       - name: Create Pull Request - trustify-ui
-        uses: peter-evans/create-pull-request@v5
-        id: ui-pr
+        uses: carlosthe19916/release-tools/.github/actions/create-pr@main
         with:
-          token: ${{ secrets.GH_PAT }}
           path: ./trustify-ui
           commit-message: "update client/openapi/trustd.yaml"
-          signoff: true
-          branch-suffix: short-commit-hash
-          title: "update client/openapi/trustd.yaml"
-          body: "Update trustify openapi definition"
-      - name: PR Notifications
-        run: |
-          echo "::notice:: Trustify UI Pull Request URL - ${{ steps.ui-pr.outputs.pull-request-url }}"
+          title: ":seedling: update client/openapi/trustd.yaml"
+          body: |
+            The openapi.yaml of trustify has changed
