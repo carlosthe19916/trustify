@@ -1,0 +1,19 @@
+[package]
+name = "trustify-cli"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+license.workspace = true
+
+[dependencies]
+anyhow = { workspace = true }
+clap = { workspace = true, features = ["derive"] }
+log = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+reqwest = { workspace = true, features = ["native-tls"] }
+tokio = { workspace = true, features = ["full"] }
+regex = { workspace = true }
+base64 = { workspace = true }
+
+directories = "6.0.0"
