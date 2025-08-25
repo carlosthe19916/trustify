@@ -14,6 +14,7 @@ trustify-common = { workspace = true }
 trustify-db = { workspace = true }
 trustify-infrastructure = { workspace = true }
 trustify-server = { workspace = true }
+trustify-cli = { workspace = true }
 
 anyhow = { workspace = true }
 clap = { workspace = true, features = ["derive", "env"] }

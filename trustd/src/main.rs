@@ -24,6 +24,8 @@ pub enum Command {
     Db(db::Run),
     /// Access OpenAPI related information of the API server
     Openapi(openapi::Run),
+    /// CLI terminal tool
+    Cli(trustify_cli::Run),
 }
 
 #[derive(clap::Parser, Debug)]
@@ -45,6 +47,7 @@ impl Trustd {
             Some(Command::Importer(run)) => run.run().await,
             Some(Command::Db(run)) => run.run().await,
             Some(Command::Openapi(run)) => run.run().await,
+            Some(Command::Cli(run)) => run.run().await,
             None => pm_mode().await,
         }
     }
