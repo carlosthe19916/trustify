@@ -8,6 +8,7 @@ pub use query::*;
 
 use crate::{
     Error::{self, Internal},
+    common::service::delete_doc,
     license::{
         get_sanitize_filename,
         service::{LicenseService, license_export::LicenseExporter},
@@ -316,6 +317,7 @@ all!(GetSbomAdvisories -> ReadSbom, ReadAdvisory);
 )]
 #[delete("/v2/sbom/{id}")]
 pub async fn delete(
+    ingestor: web::Data<IngestorService>,
     service: web::Data<SbomService>,
     db: web::Data<Database>,
     purl_service: web::Data<PurlService>,
@@ -333,6 +335,7 @@ pub async fn delete(
                 1 => {
                     let _ = purl_service.gc_purls(&tx).await; // ignore gc failure..
                     tx.commit().await?;
+                    delete_doc(&v.source_document, ingestor.storage()).await?;
                     Ok(HttpResponse::Ok().json(v))
                 }
                 _ => Err(Internal("Unexpected number of rows affected".into())),
@@ -514,7 +517,6 @@ pub async fn download(
 
         let stream = ingestor
             .storage()
-            .clone()
             .retrieve(storage_key)
             .await
             .map_err(Error::Storage)?
