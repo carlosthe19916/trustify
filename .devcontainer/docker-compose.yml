@@ -1,0 +1,85 @@
+networks:
+  trustify:
+    name: "trustify"
+
+volumes:
+  trustify-postgres-data:
+
+services:
+  trustify:
+    image: localhost/devcontainer-trustify:latest
+    build:
+      dockerfile: ./Dockerfile      
+    security_opt:
+      - "label=disable"
+    userns_mode: "keep-id"
+    environment:
+      TRUSTD_DB_HOST: trustify-db
+      HTTP_SERVER_BIND_ADDR: "::"
+      UI_ISSUER_URL: http://localhost:9090/realms/trustd
+      UI_CLIENT_ID: ui
+      AUTHENTICATOR_OIDC_ISSUER_URL: http://trustify-keycloak:8080/realms/trustd
+      AUTHENTICATOR_OIDC_CLIENT_IDS: ui,cli
+    ports:
+      - "8080:8080"
+      - "8090:8090"
+      - "9010:9010"
+    command: tail -f /dev/null
+    volumes:
+      - ..:/workspace:cached
+    networks:
+      - trustify
+    depends_on:
+      trustify-db:
+        condition: service_started
+
+  trustify-db:
+    image: postgres:17
+    restart: unless-stopped
+    volumes:
+      - trustify-postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: trustify
+      POSTGRES_DB: trustify
+      POSTGRES_HOSTNAME: localhost
+      POSTGRES_PORT: 5432
+    networks:
+      - trustify
+  
+  trustify-keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: true
+      KC_HOSTNAME: http://localhost:9090
+    ports:
+      - "9090:8080"
+    command: [ "start-dev" ]
+    networks:
+      - trustify
+
+  trustify-keycloak-wait:
+    image: docker.io/alpine/curl:latest
+    volumes:
+      - ./keycloak/kc-wait.sh:/tmp/kc-wait.sh:Z
+    entrypoint: [ "/bin/sh" ]
+    command: /tmp/kc-wait.sh
+    depends_on:
+      trustify-keycloak:
+        condition: service_started
+    networks:
+      - trustify
+
+  trustify-keycloak-init:
+    image: quay.io/keycloak/keycloak:latest
+    volumes:
+      - ./keycloak/kc-init.sh:/tmp/kc-init.sh:Z
+    entrypoint: [ "/bin/sh" ]
+    command: /tmp/kc-init.sh
+    depends_on:
+      trustify-keycloak-wait:
+        condition: service_completed_successfully
+    networks:
+      - trustify
