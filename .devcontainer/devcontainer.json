@@ -1,0 +1,37 @@
+{
+  "name": "trustify",
+  "dockerComposeFile": "./docker-compose.yml",
+  "service": "trustify",
+  "workspaceFolder": "/workspace",
+  "initializeCommand": "bash .devcontainer/initializeCommand.sh ${devcontainerId}",
+  "postCreateCommand": "bash .devcontainer/postCreateCommand.sh ${devcontainerId}",
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {},
+    "ghcr.io/devcontainers/features/rust:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vadimcn.vscode-lldb",
+        "rust-lang.rust-analyzer",
+        "tamasfe.even-better-toml",
+        "mtxr.sqltools",
+        "mtxr.sqltools-driver-pg"
+      ],
+      "settings": {
+        "git.alwaysSignOff": true,
+        "sqltools.connections": [
+          {
+            "server": "trustify-db",
+            "database": "trustify",
+            "username": "postgres",
+            "password": "trustify",
+            "port": 5432,
+            "name": "db",
+            "driver": "PostgreSQL"
+          }
+        ]
+      }
+    }
+  }
+}
