@@ -11,7 +11,7 @@ REALM="master"
 --realm ${REALM}
 
 # Start working on Trustify Realm
-TRUSTIFY_REALM="trustd"
+TRUSTIFY_REALM="trustify"
 TRUSTIFY_ROLE="admin"
 TRUSTIFY_USERNAME="admin"
 
@@ -42,7 +42,7 @@ done
 # Clients
 /opt/keycloak/bin/kcadm.sh create clients -r ${TRUSTIFY_REALM} -f - << EOF
 {
-  "clientId": "ui",
+  "clientId": "frontend",
   "publicClient": true,
   "webOrigins": [
     "*"
