@@ -1,10 +1,14 @@
 {
-  "name": "trustify",
+  "name": "trustify-full",
   "dockerComposeFile": "./docker-compose.yml",
   "service": "trustify",
   "workspaceFolder": "/workspace",
-  "initializeCommand": "bash .devcontainer/initializeCommand.sh ${devcontainerId}",
-  "postCreateCommand": "bash .devcontainer/postCreateCommand.sh ${devcontainerId}",
+  "initializeCommand": "bash .devcontainer/full/initializeCommand.sh ${devcontainerId}",
+  "postCreateCommand": "bash .devcontainer/full/postCreateCommand.sh ${devcontainerId}",
+  "forwardPorts": [
+    8080,
+    9010
+  ],
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {},
     "ghcr.io/devcontainers/features/rust:1": {}

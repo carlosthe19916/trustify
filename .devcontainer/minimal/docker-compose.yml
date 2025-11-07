@@ -1,0 +1,19 @@
+networks:
+  trustify:
+    name: "trustify"
+
+services:
+  trustify-minimal:
+    image: localhost/devcontainer-trustify-minimal:latest
+    build:
+      dockerfile: ./Dockerfile      
+    security_opt:
+      - "label=disable"
+    userns_mode: "keep-id"
+    environment:
+      HTTP_SERVER_BIND_ADDR: "::"
+    command: tail -f /dev/null
+    volumes:
+      - ../..:/workspace:cached
+    networks:
+      - trustify

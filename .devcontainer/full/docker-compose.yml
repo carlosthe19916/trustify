@@ -16,17 +16,13 @@ services:
     environment:
       TRUSTD_DB_HOST: trustify-db
       HTTP_SERVER_BIND_ADDR: "::"
-      UI_ISSUER_URL: http://localhost:9090/realms/trustd
-      UI_CLIENT_ID: ui
-      AUTHENTICATOR_OIDC_ISSUER_URL: http://trustify-keycloak:8080/realms/trustd
-      AUTHENTICATOR_OIDC_CLIENT_IDS: ui,cli
-    ports:
-      - "8080:8080"
-      - "8090:8090"
-      - "9010:9010"
+      UI_ISSUER_URL: http://localhost:9090/realms/trustify
+      UI_CLIENT_ID: frontend
+      AUTHENTICATOR_OIDC_ISSUER_URL: http://trustify-keycloak:8080/realms/trustify
+      AUTHENTICATOR_OIDC_CLIENT_IDS: frontend,cli
     command: tail -f /dev/null
     volumes:
-      - ..:/workspace:cached
+      - ../..:/workspace:cached
     networks:
       - trustify
     depends_on:

@@ -1,0 +1,31 @@
+{
+  "name": "trustify-minimal",
+  "dockerComposeFile": "./docker-compose.yml",
+  "service": "trustify-minimal",
+  "workspaceFolder": "/workspace",
+  "forwardPorts": [
+    8080,
+    8090,
+    9010
+  ],
+  "portsAttributes": {
+    "8090": {
+      "label": "Embedded OIDC",
+      "requireLocalPort": true,
+      "onAutoForward": "silent"
+    }
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {},
+    "ghcr.io/devcontainers/features/rust:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vadimcn.vscode-lldb",
+        "rust-lang.rust-analyzer",
+        "tamasfe.even-better-toml"
+      ]
+    }
+  }
+}
