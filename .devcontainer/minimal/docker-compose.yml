@@ -12,7 +12,7 @@ services:
     userns_mode: "keep-id"
     environment:
       HTTP_SERVER_BIND_ADDR: "::"
-    command: tail -f /dev/null
+    command: /bin/sh -c "while sleep 1000; do :; done"
     volumes:
       - ../..:/workspace:cached
     networks:

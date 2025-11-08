@@ -20,7 +20,7 @@ services:
       UI_CLIENT_ID: frontend
       AUTHENTICATOR_OIDC_ISSUER_URL: http://trustify-keycloak:8080/realms/trustify
       AUTHENTICATOR_OIDC_CLIENT_IDS: frontend,cli
-    command: tail -f /dev/null
+    command: /bin/sh -c "while sleep 1000; do :; done"
     volumes:
       - ../..:/workspace:cached
     networks:
