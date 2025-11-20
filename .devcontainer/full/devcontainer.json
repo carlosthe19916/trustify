@@ -7,7 +7,8 @@
   "postCreateCommand": "bash .devcontainer/full/postCreateCommand.sh ${devcontainerId}",
   "forwardPorts": [
     8080,
-    9010
+    9010,
+    9090
   ],
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {},
