@@ -13,8 +13,7 @@ if [ "${CODESPACES}" = "true" ]; then
 
     echo "carlos"
     pwd
-    ls .devcontainer/full -al
 
-    # echo "KC_HOSTNAME=\"$KC_HOSTNAME\"" >> .devcontainer/full/.env
-    # echo "UI_ISSUER_URL=\"$UI_ISSUER_URL\"" >> .devcontainer/full/.env
+    echo "KC_HOSTNAME=\"$KC_HOSTNAME\"" >> .devcontainer/full/.env
+    echo "UI_ISSUER_URL=\"$UI_ISSUER_URL\"" >> .devcontainer/full/.env
 fi
