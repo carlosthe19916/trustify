@@ -9,14 +9,14 @@ services:
   trustify:
     image: localhost/devcontainer-trustify:latest
     build:
-      dockerfile: ./Dockerfile      
+      dockerfile: ./Dockerfile
     security_opt:
       - "label=disable"
     userns_mode: "keep-id"
     environment:
       TRUSTD_DB_HOST: trustify-db
       HTTP_SERVER_BIND_ADDR: "::"
-      UI_ISSUER_URL: http://localhost:9090/realms/trustify
+      UI_ISSUER_URL: "${UI_ISSUER_URL:-http://localhost:9090/realms/trustify}"
       UI_CLIENT_ID: frontend
       AUTHENTICATOR_OIDC_ISSUER_URL: http://trustify-keycloak:8080/realms/trustify
       AUTHENTICATOR_OIDC_CLIENT_IDS: frontend,cli
@@ -42,17 +42,17 @@ services:
       POSTGRES_PORT: 5432
     networks:
       - trustify
-  
+
   trustify-keycloak:
     image: quay.io/keycloak/keycloak:latest
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
       KC_HOSTNAME_BACKCHANNEL_DYNAMIC: true
-      KC_HOSTNAME: http://localhost:9090
+      KC_HOSTNAME: "${KC_HOSTNAME:-http://localhost:9090}"
     ports:
       - "9090:8080"
-    command: [ "start-dev" ]
+    command: ["start-dev"]
     networks:
       - trustify
 
