@@ -5,10 +5,16 @@
 
 echo "devcontainerID ${1}"
 
-KC_HOSTNAME="${CODESPACE_NAME:+${CODESPACE_NAME}-9090.app.github.dev}"
-UI_ISSUER_URL="${CODESPACE_NAME:+${CODESPACE_NAME}-9090.app.github.dev/realms/trustify}"
+if [ "${CODESPACES}" = "true" ]; then
+    > .devcontainer/full/.env
 
-{
-  echo "KC_HOSTNAME=\"$KC_HOSTNAME\""
-  echo "UI_ISSUER_URL=\"$UI_ISSUER_URL\""
-} > .env
+    KC_HOSTNAME="${CODESPACE_NAME}-9090.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}"
+    UI_ISSUER_URL="${CODESPACE_NAME}-9090.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}/realms/trustify"
+
+    echo "carlos"
+    pwd
+    ls .devcontainer/full -al
+
+    # echo "KC_HOSTNAME=\"$KC_HOSTNAME\"" >> .devcontainer/full/.env
+    # echo "UI_ISSUER_URL=\"$UI_ISSUER_URL\"" >> .devcontainer/full/.env
+fi
