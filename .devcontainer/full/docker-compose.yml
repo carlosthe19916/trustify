@@ -16,7 +16,7 @@ services:
     environment:
       TRUSTD_DB_HOST: trustify-db
       HTTP_SERVER_BIND_ADDR: "::"
-      UI_ISSUER_URL: http://localhost:9090/realms/trustify
+      UI_ISSUER_URL: ${UI_ISSUER_URL:-http://localhost:9090/realms/trustify}
       UI_CLIENT_ID: frontend
       AUTHENTICATOR_OIDC_ISSUER_URL: http://trustify-keycloak:8080/realms/trustify
       AUTHENTICATOR_OIDC_CLIENT_IDS: frontend,cli
